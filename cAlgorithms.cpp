@@ -1,5 +1,47 @@
 #include "cHelperFuncs.cpp"
 
+
+string largeNumMult(std::string A, std::string B)
+{
+
+    reverse(A.begin(), A.end());
+    reverse(B.begin(), B.end());
+    int l1 = A.size();
+    int l2 = B.size();
+    string result(l1+l2, 0);
+    int carry = 0;
+    int sum = 0;
+
+    int n1;
+    int n2;
+    int mul;
+    int offset = 0;
+   
+
+    for(int i = 0; i<l2; i++)
+    {   
+        int j;
+        carry = 0;
+        n2    = B[i] - '0';
+        for(j = 0; j<l1; j++)
+        { 
+            n1      = A[j] - '0';
+            mul     = n1*n2;
+            sum     = carry + mul + result[j + offset];
+            result[j + offset]               = (sum)%10;
+            carry   = sum / 10;
+        }
+        result[j + offset] += carry;
+        offset++;
+    }
+    for(auto &c: result)
+        c += '0';
+
+    reverse(result.begin(), result.end());
+
+    return result;
+}
+
 void merge(vector<int>& vec)
 {
     int p   = 0;
