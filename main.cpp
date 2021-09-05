@@ -24,7 +24,12 @@ int main(int, char**)
     treeInsert(root, x);
     treeInsert(root, a);
 
-    cout << "" << endl;
+
+    string result =  largeNumMult("3141592653589793238462643383279502884197169399375105820974944592", "2718281828459045235360287471352662497757247093699959574966967627");
+    cout << endl << result << endl;
+
+
+    // std::cout << 31415926535897932384626433832795 << endl;
 
 
     // node* x = treeMax(root);

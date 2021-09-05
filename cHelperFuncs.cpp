@@ -6,7 +6,7 @@
 #include <vector>
 #include <iterator>
 #include <limits>
-
+#include <bits/stdc++.h>
 
 
 using namespace std;
