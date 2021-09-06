@@ -31,4 +31,23 @@ void swap(int&a, int&b)
 }
 
 
+void file2Vec(const string& filename, vector<int>& vec)
+{
+    // Reads Integers From Files and stores them in vectors
+
+    /**** TODO: use templates to make vector accomodate different types ****/
+
+    string line;
+    ifstream numFile (filename);
+
+    if(numFile.is_open())
+    {
+        while(getline(numFile, line))
+        {
+            vec.push_back(stoi(line));
+        }
+    }
+}
+
+
 #endif
