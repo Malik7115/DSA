@@ -25,8 +25,8 @@ int main(int, char**)
     treeInsert(root, a);
 
 
-    string result =  largeNumMult("3141592653589793238462643383279502884197169399375105820974944592", "2718281828459045235360287471352662497757247093699959574966967627");
-    cout << endl << result << endl;
+    // string result =  largeNumMult("3141592653589793238462643383279502884197169399375105820974944592", "2718281828459045235360287471352662497757247093699959574966967627");
+    // cout << endl << result << endl;
 
 
     // std::cout << 31415926535897932384626433832795 << endl;
@@ -36,6 +36,17 @@ int main(int, char**)
     // int key = x->key;    
     // std::cout << "root->right" << endl;
 
+    struct node* Node = new node(3);
+
+    Node->right = new node(3);
+    Node->left = new node(3);
+
+    Node->right->right = new node(3);
+    Node->right->left = new node(3);
+
+    bool test = isUniVal(Node);
+
+    std::cout << test << endl;
     
 }
 

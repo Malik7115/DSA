@@ -1,4 +1,5 @@
 #include "cHelperFuncs.cpp"
+#include "cDataStructs.cpp"
 
 
 string largeNumMult(std::string A, std::string B)
@@ -101,5 +102,35 @@ void mergeSort(vector<int> &vec)
         cout << endl;
         
     }
+}
+
+bool isUniVal(node* x)
+{
+    if(x == NULL)
+    {
+        return true;
+    }
+    bool is_right_unival = false;
+    bool is_left_unival = false;
+
+    is_right_unival = isUniVal(x->right);
+    is_left_unival  = isUniVal(x->left);
+
+    if(x->right != NULL && x->left != NULL)
+    {
+        if(x->right->key == x->left->key && (is_right_unival & is_left_unival) == true)
+        {
+            return true;
+        }
+
+        else 
+            return false;    
+    }
+
+    else if ((is_right_unival & is_left_unival) == true)
+    {
+        return true;
+    }
+    
 }
 
