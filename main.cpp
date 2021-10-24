@@ -9,44 +9,118 @@
 
 int main(int, char**)
 {
-    //vector<int> vec = {4,2,7,5,1,2,3,6};
-    vector<int> vec = {14,16,20,22,19};
+    // vector<int> vec = {4,2,7,5,1,2,0,3,6};
 
-    struct node* root = new node(3);
-    struct node* z    = new node(4);
-    struct node* y    = new node(2);
-    struct node* x    = new node(1);
-    struct node* a    = new node(5);
+    
+    vector<pair<int, vector<int>>> adj;
+    int maxVertices = 200;
+    file2graph("graph.txt", maxVertices, adj);
+
+    // adj.resize(4);
+    // addEdge(adj, 0, 1);
+    // addEdge(adj, 0, 2);
+    // addEdge(adj, 1, 0);
+    // addEdge(adj, 1, 3);
+    // addEdge(adj, 2, 0);
+    // addEdge(adj, 2, 3);
+    // addEdge(adj, 3, 1);
+    // addEdge(adj, 3, 2);
+    // addEdge(adj, 1, 2);
+    // addEdge(adj, 2, 1);
+
+    
+    // contraction(adj,0,2);
+    // contraction(adj,0,1);
+
+    cout << adj[0].second.size();
+    
     
 
-    treeInsert(root, z);
-    treeInsert(root, y);
-    treeInsert(root, x);
-    treeInsert(root, a);
 
 
-    // string result =  largeNumMult("3141592653589793238462643383279502884197169399375105820974944592", "2718281828459045235360287471352662497757247093699959574966967627");
-    // cout << endl << result << endl;
+    int minCuts = 199;
+    
+    minCuts = kargersMinCut(adj, 500);
+    cout << "HERE \n";
+    cout << "Min Cuts: " << minCuts << endl;
+
+    
+
+    // contraction(adj, 0, 2);
+    // contraction(adj, 1, 3);
+
+    // adj.erase(adj.begin()); 
+    // cout << adj[0].at(0) << endl;
+    //printGraph(adj, V);
+    
+    
+
+    vector<int> vec = {3,2,3,4,5,5,3,6,3};
+    // sort(vec.begin(), vec.end());
+    
+    int count = 0;
+    auto it = std::remove(vec.begin(), vec.end(), 3);
+
+    vector<int> vec2;
+    copy(vec.begin(), it, back_inserter(vec2));
+    vec.clear();
+
+    copy(vec2.begin(), vec2.end(), back_inserter(vec));
 
 
-    // std::cout << 31415926535897932384626433832795 << endl;
+
+    // for(auto x: vec)
+    // {
+    //     vec.erase(find(vec.begin(),vec.end(),3));
+
+    // }
+
+    int ser = 7;
+
+    // vector<pair<char, int>> A;
+    // A.push_back({'l',2});
+    // A.push_back({'m',3});
+    // A.push_back({'r',4});
 
 
-    // node* x = treeMax(root);
-    // int key = x->key;    
-    // std::cout << "root->right" << endl;
 
-    struct node* Node = new node(3);
+    // cout << "DoNR" << endl << A[0].first;
 
-    Node->right = new node(3);
-    Node->left = new node(3);
+    // vector<int> vec2;
+    // file2Vec("array.txt", vec2);
 
-    Node->right->right = new node(3);
-    Node->right->left = new node(3);
+    // // int count = quickSort(vec, 0, vec.size() - 1);
+    // int count = quickSort(vec2, 0, vec2.size() - 1);
 
-    bool test = isUniVal(Node);
+    // //pivot == first; count  ==  162085
+    // //pivot == last; count   ==  164123
+    // //pivot == median; count ==  138382
 
-    std::cout << test << endl;
+    // cout << vec2.size() << endl;
+
+    // struct node* root = new node(3);
+    // struct node* z    = new node(4);
+    // struct node* y    = new node(2);
+    // struct node* x    = new node(1);
+    // struct node* a    = new node(5);
+    
+
+    // treeInsert(root, z);
+    // treeInsert(root, y);
+    // treeInsert(root, x);
+    // treeInsert(root, a);
+
+    // struct node* Node = new node(3);
+
+    // Node->right = new node(3);
+    // Node->left = new node(3);
+
+    // Node->right->right = new node(3);
+    // Node->right->left = new node(3);
+
+    // bool test = isUniVal(Node);
+
+    // std::cout << test << endl;
     
 }
 

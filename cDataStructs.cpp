@@ -3,7 +3,97 @@
 
 #include "cHelperFuncs.cpp"
 
+/****************
+//Graphs:
+****************/
+void addEdge(vector<pair<int, vector<int>>> &adj, int u, int v)
+{
+    adj[u].second.push_back(v);
 
+    adj[u].first = u;
+}
+
+void contraction(vector<pair<int, vector<int>>> &adj, int u, int v)
+{   
+    int a = 0; //index for vertex u
+    int b = 0; //index for vertex v
+
+    int count = 0;
+    
+    //find corresponding indices a and b for u and v
+    for (auto i: adj)
+    {
+        if(i.first == u)
+        {
+            a = count; 
+        }
+        if(i.first == v)
+        {
+            b = count;
+        }
+        count++;
+    }
+
+    //remove for self loop/edge
+    // auto edge = find(adj[b].second.begin(), adj[b].second.end(),  u);
+    // *edge     = edge - adj[b].second.begin();
+    // adj[b].second.erase(edge);
+
+    // edge = find(adj[a].second.begin(), adj[a].second.end(),  v);
+    // *edge     = edge - adj[a].second.begin();
+    // adj[a].second.erase(edge);
+
+    vector <int> temp;
+    auto it = remove(adj[b].second.begin(), adj[b].second.end(), u);
+
+    copy(adj[b].second.begin(), it, back_inserter(temp));
+    adj[b].second.clear();
+    copy(temp.begin(), temp.end(), back_inserter(adj[b].second));
+    temp.clear();
+
+    it = remove(adj[a].second.begin(), adj[a].second.end(), v);
+    copy(adj[a].second.begin(), it, back_inserter(temp));
+    adj[a].second.clear();
+    copy(temp.begin(), temp.end(), back_inserter(adj[a].second));
+    temp.clear();
+
+    //iterate the v index
+    for(auto &x: adj[b].second)
+    {         
+        for (auto &y: adj)
+        {
+            if (y.first == x)
+            {
+                for (auto &z: y.second)
+                {
+                    if(z == v)
+                    {
+                        z = u;
+                    }
+                }
+            }
+        }
+
+        adj[a].second.push_back(x);
+    }
+
+    // a.insert(std::end(a), std::begin(b), std::end(b));
+
+    adj.erase(adj.begin() + b); // delete node itself
+
+}
+
+void printGraph(vector<int> adj[], int V)
+{
+    for (int v = 0; v < V; ++v)
+    {
+        cout << "\n Adjacency list of vertex "
+             << v << "\n head ";
+        for (auto x : adj[v])
+           cout << "-> " << x;
+        printf("\n");
+    }
+}
 
 /****************
 //Heaps:
