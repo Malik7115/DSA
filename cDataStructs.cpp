@@ -6,12 +6,191 @@
 /****************
 //Graphs:
 ****************/
+
+
+class vertex
+{
+    public:
+        int name;
+        vector<int> edges;
+        
+        
+};
+
 void addEdge(vector<pair<int, vector<int>>> &adj, int u, int v)
 {
+    // adds edge to a graph
+
+    // second is a vector that represents edges of a vertex
     adj[u].second.push_back(v);
 
+    // first represents name of vertex
     adj[u].first = u;
 }
+
+// recursive DFS subroutine for the actual DFS Loop
+void DFS(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s)
+{
+    // s is start vertex
+    explored.push_back(s);
+
+    // v is next index to be explored
+    int v;
+    
+    for(int i = 0; i < adj[s].second.size(); i++)
+    {
+        v = adj[s].second[i];
+        bool checkExplored = false;
+
+        
+        for(auto x: explored)
+        {
+            if (v == x)
+            {
+                checkExplored = true;
+            }
+        }
+
+        if (checkExplored != true)
+        {   
+
+            DFS(adj, explored, v);
+            // copy(explored.begin(), explored.end(), back_inserter(recureseExplored));
+        }
+    }
+}
+
+
+
+
+// actial routine to find out all veritces in a graph
+vector<int> DFSLoop(vector<pair<int, vector<int>>> &adj)
+{
+    vector<int> explored;
+    int currentLabel = adj.size() - 1;
+
+    // for each vertex v in gragh adj
+    for(int v = 0; v < adj.size(); v++)
+    {
+        bool checkExplored = false;
+
+        for(auto x: explored)
+        {
+            if(v == x)
+            {
+                checkExplored = true;
+            }
+        }
+
+        if(!checkExplored)
+        {
+            DFS(adj, explored, v);
+        }
+    }
+    return explored;
+}
+
+void DFS_Topo(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
+                vector<int> &finishingTime, int &currentLabel)
+{
+    // s is start vertex
+    explored.push_back(s);
+
+    // v is next index to be explored
+    int v;
+    
+    for(int i = 0; i < adj[s].second.size(); i++)
+    {
+        v = adj[s].second[i];
+        bool checkExplored = false;
+
+        
+        for(auto x: explored)
+        {
+            if (v == x)
+            {
+                checkExplored = true;
+            }
+        }
+
+        if (checkExplored != true)
+        {   
+
+            DFS_Topo(adj, explored, v, finishingTime, currentLabel);
+            // copy(explored.begin(), explored.end(), back_inserter(recureseExplored));
+        }
+    }
+
+    finishingTime[s]  = currentLabel;
+    currentLabel --;
+
+}
+
+vector<int> topoSort(vector<pair<int, vector<int>>> &adj)
+{
+    vector<int> explored;
+    vector<int> finishingTime;
+
+    finishingTime.resize(adj.size());
+
+    int currentLabel = adj.size();
+
+    for(int v = 0; v < adj.size(); v++)
+    {
+        bool checkExplored = false;
+        for(auto x: explored)
+        {
+            if(v == x)
+            {
+                checkExplored = true;
+            }
+        }
+
+        if(!checkExplored)
+        {
+            DFS_Topo(adj, explored, v, finishingTime, currentLabel);
+        }
+
+    }
+    
+    // returns vector where index corresponds to vertex and value corresponds
+    // to finishing time of a vertex
+    return finishingTime;
+}
+
+
+
+
+
+void kosaraju(vector<pair<int, vector<int>>> &adj)
+{
+    vector<pair<int, vector<int>>> rev = transposeGraph(adj);
+
+    pair<int, int> numSCC;
+    vector<int> finishingTime;
+
+    finishingTime = topoSort(rev);
+    
+}
+
+
+vector<pair<int, vector<int>>> transposeGraph(vector<pair<int, vector<int>>> adj)
+{
+    //returns the transpose of a directed graph created from an adjacency list
+    vector<pair<int, vector<int>>> reverse;
+    reverse.resize(adj.size());
+
+    for (int i=0; i < adj.size(); i++)
+    {
+        for (int j = 0; j < adj[i].second.size(); j++)
+        {
+            reverse[adj[i].second[j]].first = adj[i].second[j];
+            reverse[adj[i].second[j]].second.push_back(adj[i].first);
+        }
+    }
+    return reverse;
+}
+
 
 void contraction(vector<pair<int, vector<int>>> &adj, int u, int v)
 {   
@@ -83,17 +262,6 @@ void contraction(vector<pair<int, vector<int>>> &adj, int u, int v)
 
 }
 
-void printGraph(vector<int> adj[], int V)
-{
-    for (int v = 0; v < V; ++v)
-    {
-        cout << "\n Adjacency list of vertex "
-             << v << "\n head ";
-        for (auto x : adj[v])
-           cout << "-> " << x;
-        printf("\n");
-    }
-}
 
 /****************
 //Heaps:

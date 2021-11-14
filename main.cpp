@@ -13,46 +13,25 @@ int main(int, char**)
 
     
     vector<pair<int, vector<int>>> adj;
-    int maxVertices = 200;
-    file2graph("graph.txt", maxVertices, adj);
+    // int maxVertices = 200;
+    // file2graph("graph.txt", maxVertices, adj);
 
-    // adj.resize(4);
-    // addEdge(adj, 0, 1);
-    // addEdge(adj, 0, 2);
-    // addEdge(adj, 1, 0);
-    // addEdge(adj, 1, 3);
-    // addEdge(adj, 2, 0);
-    // addEdge(adj, 2, 3);
-    // addEdge(adj, 3, 1);
-    // addEdge(adj, 3, 2);
-    // addEdge(adj, 1, 2);
-    // addEdge(adj, 2, 1);
+    adj.resize(4);
 
+    addEdge(adj, 0, 1);
+    addEdge(adj, 0, 2);
+    addEdge(adj, 1, 3);
+    addEdge(adj, 2, 3);
+    // addEdge(adj, 3, 0);
     
-    // contraction(adj,0,2);
-    // contraction(adj,0,1);
+    vector<int> explored;
+    explored = DFSLoop(adj);
 
-    cout << adj[0].second.size();
-    
-    
+    vector<int> f = topoSort(adj);
 
+    vector<pair<int, vector<int>>> reverse = transposeGraph(adj);
 
-
-    int minCuts = 199;
-    
-    minCuts = kargersMinCut(adj, 500);
-    cout << "HERE \n";
-    cout << "Min Cuts: " << minCuts << endl;
-
-    
-
-    // contraction(adj, 0, 2);
-    // contraction(adj, 1, 3);
-
-    // adj.erase(adj.begin()); 
-    // cout << adj[0].at(0) << endl;
-    //printGraph(adj, V);
-    
+    cout << "finished" << endl;
     
 
     vector<int> vec = {3,2,3,4,5,5,3,6,3};
