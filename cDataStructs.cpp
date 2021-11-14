@@ -28,6 +28,24 @@ void addEdge(vector<pair<int, vector<int>>> &adj, int u, int v)
     adj[u].first = u;
 }
 
+vector<pair<int, vector<int>>> transposeGraph(vector<pair<int, vector<int>>> adj)
+{
+    //returns the transpose of a directed graph created from an adjacency list
+    vector<pair<int, vector<int>>> reverse;
+    reverse.resize(adj.size());
+
+    for (int i=0; i < adj.size(); i++)
+    {
+        for (int j = 0; j < adj[i].second.size(); j++)
+        {
+            reverse[adj[i].second[j]].first = adj[i].second[j];
+            reverse[adj[i].second[j]].second.push_back(adj[i].first);
+        }
+    }
+    return reverse;
+}
+
+
 // recursive DFS subroutine for the actual DFS Loop
 void DFS(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s)
 {
@@ -61,8 +79,6 @@ void DFS(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s)
 }
 
 
-
-
 // actial routine to find out all veritces in a graph
 vector<int> DFSLoop(vector<pair<int, vector<int>>> &adj)
 {
@@ -91,10 +107,86 @@ vector<int> DFSLoop(vector<pair<int, vector<int>>> &adj)
 }
 
 void DFS_Topo(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
-                vector<int> &finishingTime, int &currentLabel)
+                map<int, int> &finishingTime, int &currentLabel)
 {
     // s is start vertex
     explored.push_back(s);
+
+    // v is next index to be explored
+    int v;
+    
+    for(int i = 0; i < adj[s].second.size(); i++)
+    {
+        // cout << "DFS TOPo   " << v << endl;
+        v = adj[s].second[i];
+        bool checkExplored = false;
+
+        
+        for(auto x: explored)
+        {
+            if (v == x)
+            {
+                checkExplored = true;
+            }
+        }
+
+        if (checkExplored != true)
+        {   
+
+            DFS_Topo(adj, explored, v, finishingTime, currentLabel);
+            // copy(explored.begin(), explored.end(), back_inserter(recureseExplored));
+        }
+    }
+
+    finishingTime.insert(pair<int, int>(s, currentLabel));
+    currentLabel --;
+
+}
+
+map<int, int> topoSort(vector<pair<int, vector<int>>> &adj)
+{
+    vector<int> explored;
+    vector<int> finishingTime;
+    map<int, int> fT;
+
+    finishingTime.resize(adj.size());
+
+    int currentLabel = adj.size();
+
+    int track = 0;
+    for(int v = 0; v < adj.size(); v++)
+    {
+        // track ++;
+        // cout << track << endl;
+        bool checkExplored = false;
+        for(auto x: explored)
+        {
+            if(v == x)
+            {
+                checkExplored = true;
+            }
+        }
+
+        if(!checkExplored)
+        {
+            DFS_Topo(adj, explored, v, fT, currentLabel);
+        }
+
+    }
+    
+    // returns vector where index corresponds to vertex and value corresponds
+    // to finishing time of a vertex
+
+    
+    return fT;
+}
+
+void DFS_SCC(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
+             int &numSCC, vector<int> &mapSCC)
+{
+    // s is start vertex
+    explored.push_back(s);
+    mapSCC[s] = numSCC;
 
     // v is next index to be explored
     int v;
@@ -116,31 +208,44 @@ void DFS_Topo(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
         if (checkExplored != true)
         {   
 
-            DFS_Topo(adj, explored, v, finishingTime, currentLabel);
+            DFS_SCC(adj, explored, v, numSCC, mapSCC);
             // copy(explored.begin(), explored.end(), back_inserter(recureseExplored));
         }
     }
-
-    finishingTime[s]  = currentLabel;
-    currentLabel --;
-
 }
 
-vector<int> topoSort(vector<pair<int, vector<int>>> &adj)
+
+vector<int> kosaraju(vector<pair<int, vector<int>>> &adj)
 {
+
+    cout << ">>>>>>>.KOSARAJU\n";
+    vector<pair<int, vector<int>>> rev = adj;
+    rev = transposeGraph(rev);
+
+    int numSCC = 0;
+    map<int,int> finishingTime;
+    vector<pair<int,int>> sortedFt;
+
+    // hashmap for <vertex, leader>
+    vector<int> mapSCC;
+    mapSCC.resize(adj.size());
+
+    finishingTime = topoSort(rev);
+    sortedFt = sortMapVal(finishingTime);
+
     vector<int> explored;
-    vector<int> finishingTime;
 
-    finishingTime.resize(adj.size());
+    int track = 0;
 
-    int currentLabel = adj.size();
-
-    for(int v = 0; v < adj.size(); v++)
+    for(auto v: sortedFt)
     {
+        track++;
+        // std::cout << "KOSARAJU  " << track << endl;
+
         bool checkExplored = false;
         for(auto x: explored)
         {
-            if(v == x)
+            if(v.first == x)
             {
                 checkExplored = true;
             }
@@ -148,48 +253,15 @@ vector<int> topoSort(vector<pair<int, vector<int>>> &adj)
 
         if(!checkExplored)
         {
-            DFS_Topo(adj, explored, v, finishingTime, currentLabel);
-        }
-
-    }
-    
-    // returns vector where index corresponds to vertex and value corresponds
-    // to finishing time of a vertex
-    return finishingTime;
-}
-
-
-
-
-
-void kosaraju(vector<pair<int, vector<int>>> &adj)
-{
-    vector<pair<int, vector<int>>> rev = transposeGraph(adj);
-
-    pair<int, int> numSCC;
-    vector<int> finishingTime;
-
-    finishingTime = topoSort(rev);
-    
-}
-
-
-vector<pair<int, vector<int>>> transposeGraph(vector<pair<int, vector<int>>> adj)
-{
-    //returns the transpose of a directed graph created from an adjacency list
-    vector<pair<int, vector<int>>> reverse;
-    reverse.resize(adj.size());
-
-    for (int i=0; i < adj.size(); i++)
-    {
-        for (int j = 0; j < adj[i].second.size(); j++)
-        {
-            reverse[adj[i].second[j]].first = adj[i].second[j];
-            reverse[adj[i].second[j]].second.push_back(adj[i].first);
+            numSCC += 1;
+            DFS_SCC(adj, explored, v.first, numSCC, mapSCC);
         }
     }
-    return reverse;
+
+    return mapSCC;
 }
+
+
 
 
 void contraction(vector<pair<int, vector<int>>> &adj, int u, int v)

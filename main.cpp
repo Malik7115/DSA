@@ -14,20 +14,65 @@ int main(int, char**)
     
     vector<pair<int, vector<int>>> adj;
     // int maxVertices = 200;
-    // file2graph("graph.txt", maxVertices, adj);
+    file2graph("graph.txt", adj);
 
-    adj.resize(4);
+    // adj.resize(6);
 
-    addEdge(adj, 0, 1);
-    addEdge(adj, 0, 2);
-    addEdge(adj, 1, 3);
-    addEdge(adj, 2, 3);
+    // addEdge(adj, 0, 1);
+    // addEdge(adj, 1, 2);
+    // addEdge(adj, 2, 0);
+    // addEdge(adj, 3, 2);
+    // addEdge(adj, 3, 4);
+    // addEdge(adj, 4, 5);
+    // addEdge(adj, 5, 3);
+
     // addEdge(adj, 3, 0);
     
     vector<int> explored;
-    explored = DFSLoop(adj);
+    // explored = DFSLoop(adj);
 
-    vector<int> f = topoSort(adj);
+    vector<int> mapSCC    = kosaraju(adj);
+    vector<int> uniqueSCC = mapSCC;
+
+    sort(uniqueSCC.begin(), uniqueSCC.end());
+
+    vector<int>::iterator ip;
+
+    ip = std::unique(uniqueSCC.begin(), uniqueSCC.end());
+    uniqueSCC.resize(std::distance(uniqueSCC.begin(), ip));
+
+    vector<int> countSCC;
+    countSCC.resize(uniqueSCC.size());
+
+    for(int i = 0; i < uniqueSCC.size(); i++)
+    {
+        int num = uniqueSCC[i];
+        int count = 0;
+
+        for(auto x: mapSCC)
+        {
+            if (x == num)
+            {
+                count++;
+            }
+        }
+
+        countSCC[i] = count;
+
+    }    
+
+    sort(countSCC.begin(), countSCC.end());
+
+    map<int,int> f = topoSort(adj);
+
+    // vector<pair<int, int>> sorted_f = sortMapVal(f);
+    // for(auto x: sorted_f)
+    // {
+    //     cout << x.first;
+    // }
+
+    
+
 
     vector<pair<int, vector<int>>> reverse = transposeGraph(adj);
 
