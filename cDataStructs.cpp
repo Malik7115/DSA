@@ -52,6 +52,8 @@ void DFS(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s)
     // s is start vertex
     explored.push_back(s);
 
+    cout << "SIZE  " << explored.size() << endl;
+
     // v is next index to be explored
     int v;
     
@@ -83,7 +85,6 @@ void DFS(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s)
 vector<int> DFSLoop(vector<pair<int, vector<int>>> &adj)
 {
     vector<int> explored;
-    int currentLabel = adj.size() - 1;
 
     // for each vertex v in gragh adj
     for(int v = 0; v < adj.size(); v++)
@@ -95,6 +96,7 @@ vector<int> DFSLoop(vector<pair<int, vector<int>>> &adj)
             if(v == x)
             {
                 checkExplored = true;
+                break;
             }
         }
 
@@ -106,11 +108,16 @@ vector<int> DFSLoop(vector<pair<int, vector<int>>> &adj)
     return explored;
 }
 
-void DFS_Topo(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
+void DFS_Topo(vector<pair<int, vector<int>>> &adj, vector<bool> &explored, int s,
                 map<int, int> &finishingTime, int &currentLabel)
 {
     // s is start vertex
-    explored.push_back(s);
+    explored[s] = 1;
+    std::vector<int>::iterator it;
+
+    // if(!(explored.size()%1000))
+    //     cout << "DFS TOPO EXP  " << explored.size() << endl;
+
 
     // v is next index to be explored
     int v;
@@ -121,21 +128,33 @@ void DFS_Topo(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
         v = adj[s].second[i];
         bool checkExplored = false;
 
-        
-        for(auto x: explored)
+
+        if (!explored[v])
         {
-            if (v == x)
-            {
-                checkExplored = true;
-            }
-        }
-
-        if (checkExplored != true)
-        {   
-
             DFS_Topo(adj, explored, v, finishingTime, currentLabel);
-            // copy(explored.begin(), explored.end(), back_inserter(recureseExplored));
         }
+
+
+        // if (!count(explored.begin(), explored.end(), v))
+        // {
+        //     DFS_Topo(adj, explored, v, finishingTime, currentLabel);
+        // }
+        
+        // for(auto x: explored)
+        // {
+        //     if (v == x)
+        //     {
+        //         checkExplored = true;
+        //         break;
+        //     }
+        // }
+
+        // if (checkExplored != true)
+        // {   
+
+        //     DFS_Topo(adj, explored, v, finishingTime, currentLabel);
+        //     // copy(explored.begin(), explored.end(), back_inserter(recureseExplored));
+        // }
     }
 
     finishingTime.insert(pair<int, int>(s, currentLabel));
@@ -145,7 +164,10 @@ void DFS_Topo(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
 
 map<int, int> topoSort(vector<pair<int, vector<int>>> &adj)
 {
-    vector<int> explored;
+    vector<bool> explored;
+    explored.resize(adj.size());
+    std::vector<int>::iterator it;
+
     vector<int> finishingTime;
     map<int, int> fT;
 
@@ -153,39 +175,44 @@ map<int, int> topoSort(vector<pair<int, vector<int>>> &adj)
 
     int currentLabel = adj.size();
 
-    int track = 0;
     for(int v = 0; v < adj.size(); v++)
     {
         // track ++;
         // cout << track << endl;
         bool checkExplored = false;
-        for(auto x: explored)
-        {
-            if(v == x)
-            {
-                checkExplored = true;
-            }
-        }
 
-        if(!checkExplored)
+        if (!explored[v])
         {
             DFS_Topo(adj, explored, v, fT, currentLabel);
         }
 
+        // for(auto x: explored)
+        // {
+        //     if(v == x)
+        //     {
+        //         checkExplored = true;
+        //     }
+        // }
+
+        // if(!checkExplored)
+        // {
+        //     DFS_Topo(adj, explored, v, fT, currentLabel);
+        // }
+
     }
     
     // returns vector where index corresponds to vertex and value corresponds
-    // to finishing time of a vertex
-
-    
+    // to finishing time of a vertex    
     return fT;
 }
 
-void DFS_SCC(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
-             int &numSCC, vector<int> &mapSCC)
+void DFS_SCC(vector<pair<int, vector<int>>> &adj, vector<bool> &explored, int s,
+             int &numSCC, vector<int> &mapSCC, int &countCC)
 {
     // s is start vertex
-    explored.push_back(s);
+    explored[s] = 1;
+    // cout << "DFS SCC EXP  " << explored.size() << endl;
+
     mapSCC[s] = numSCC;
 
     // v is next index to be explored
@@ -197,19 +224,10 @@ void DFS_SCC(vector<pair<int, vector<int>>> &adj, vector<int> &explored, int s,
         bool checkExplored = false;
 
         
-        for(auto x: explored)
-        {
-            if (v == x)
-            {
-                checkExplored = true;
-            }
-        }
-
-        if (checkExplored != true)
+        if (!explored[v])
         {   
-
-            DFS_SCC(adj, explored, v, numSCC, mapSCC);
-            // copy(explored.begin(), explored.end(), back_inserter(recureseExplored));
+            countCC++;
+            DFS_SCC(adj, explored, v, numSCC, mapSCC, countCC);
         }
     }
 }
@@ -222,6 +240,9 @@ vector<int> kosaraju(vector<pair<int, vector<int>>> &adj)
     vector<pair<int, vector<int>>> rev = adj;
     rev = transposeGraph(rev);
 
+    int countCC = 1;
+    vector<int> vecSCC;
+
     int numSCC = 0;
     map<int,int> finishingTime;
     vector<pair<int,int>> sortedFt;
@@ -233,32 +254,26 @@ vector<int> kosaraju(vector<pair<int, vector<int>>> &adj)
     finishingTime = topoSort(rev);
     sortedFt = sortMapVal(finishingTime);
 
-    vector<int> explored;
-
-    int track = 0;
+    vector<bool> explored;
+    explored.resize(adj.size());
 
     for(auto v: sortedFt)
     {
-        track++;
-        // std::cout << "KOSARAJU  " << track << endl;
 
         bool checkExplored = false;
-        for(auto x: explored)
-        {
-            if(v.first == x)
-            {
-                checkExplored = true;
-            }
-        }
 
-        if(!checkExplored)
+        if(!explored[v.first])
         {
             numSCC += 1;
-            DFS_SCC(adj, explored, v.first, numSCC, mapSCC);
+            DFS_SCC(adj, explored, v.first, numSCC, mapSCC, countCC);
+            vecSCC.push_back(countCC);
+            countCC = 1;
         }
     }
 
-    return mapSCC;
+    // vecSCC is the number of SCCs in the graph
+    // mapSCC is a mapping of each vertex to the corresponding SCC
+    return vecSCC;
 }
 
 

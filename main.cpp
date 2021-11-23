@@ -6,15 +6,27 @@
 #include <iostream>
 
 
-
 int main(int, char**)
 {
     // vector<int> vec = {4,2,7,5,1,2,0,3,6};
 
     
     vector<pair<int, vector<int>>> adj;
+    vector<pair<int, vector<int>>> lens;
     // int maxVertices = 200;
-    file2graph("graph.txt", adj);
+    file2graph("graph1.txt", adj, lens);
+
+    vector<int> A = dijkstraSP(adj, 0, lens);
+
+    cout << adj.size() << endl;
+
+    vector<int> test =  {6,36,58,81,98,114,132,164,187,196};
+    // [2599, 2610, 2947, 2052, 2367, 2399, 2029, 2442, 2505, 3068]
+    int dist;
+    for(auto x: test)
+    {
+        dist = A[x];
+    }
 
     // adj.resize(6);
 
@@ -29,9 +41,11 @@ int main(int, char**)
     // addEdge(adj, 3, 0);
     
     vector<int> explored;
-    // explored = DFSLoop(adj);
+    // DFS(adj, explored, 0);
 
     vector<int> mapSCC    = kosaraju(adj);
+    sort(mapSCC.begin(), mapSCC.end(), greater<int>());
+
     vector<int> uniqueSCC = mapSCC;
 
     sort(uniqueSCC.begin(), uniqueSCC.end());
@@ -53,6 +67,7 @@ int main(int, char**)
         {
             if (x == num)
             {
+                cout << i << endl;
                 count++;
             }
         }
@@ -62,6 +77,13 @@ int main(int, char**)
     }    
 
     sort(countSCC.begin(), countSCC.end());
+
+
+    cout << "ASDASDASDASDASDSADASD" << endl;
+    for(auto x: countSCC)
+    {
+        cout << x << endl;
+    }
 
     map<int,int> f = topoSort(adj);
 
@@ -147,4 +169,3 @@ int main(int, char**)
     // std::cout << test << endl;
     
 }
-

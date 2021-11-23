@@ -183,7 +183,6 @@ return qsCount;
  * Graph Algorithms
  * ******************/
 
-
 int kargersMinCut(vector<pair<int, vector<int>>> graph, int it)
 {
     int totalCuts = 0;
@@ -240,6 +239,58 @@ int kargersMinCut(vector<pair<int, vector<int>>> graph, int it)
     return minCuts;
 }
 
+
+vector<int> dijkstraSP(vector<pair<int, vector<int>>> &adj, int s, vector<pair<int, vector<int>>> &len)
+{
+    vector<int>  X; // X contains all processed vertices
+    X.push_back(s);
+
+    vector<bool> boolX;
+    boolX.resize(adj.size());
+    fill(boolX.begin(), boolX.end(), 0);
+    boolX[s] = 1;
+
+    vector<int>  A; // A contains shortest paths from s to all vertices
+    A.resize(adj.size());
+    A[s] = 0;
+
+
+    int costMin = 9999;
+    int cost    = 0;
+
+    int vstar;
+    int wstar;
+
+    while(X.size() != adj.size())
+    {
+        costMin = 99999;
+        for(auto v: X)
+        {
+            for (int w=0; w < adj[v].second.size(); w++)
+            {   
+                if(boolX[adj[v].second[w]] == true)
+                    continue;
+
+                cost = A[v] + len[v].second[w];
+                if(cost < costMin)
+                {
+                    costMin = cost;
+                    vstar   = v;
+                    wstar   = adj[v].second[w];
+                }
+                
+            }
+        }
+        A[wstar] = costMin;
+        X.push_back(wstar);
+        boolX[wstar] = 1;
+    }
+
+
+
+
+    return A;
+}
 
 bool isUniVal(node* x)
 {

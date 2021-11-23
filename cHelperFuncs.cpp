@@ -117,7 +117,8 @@ void file2graph(const string& filename, int maxVertices, vector<pair<int, vector
 }
 
 
-void file2graph(const string& filename, vector<pair<int, vector<int>>> &adj)
+void file2graph(const string& filename, vector<pair<int, vector<int>>> &adj,
+                vector<pair<int, vector<int>>> &lens)
 {
     string line;
     ifstream numFile (filename);
@@ -140,7 +141,8 @@ void file2graph(const string& filename, vector<pair<int, vector<int>>> &adj)
                     if(stoi(word) > largestNum)
                     {
                         largestNum = stoi(word);
-                        adj.resize(largestNum);                        
+                        adj.resize(largestNum);
+                        lens.resize(largestNum);                     
                     }
                     
                     vertex = stoi(word) - 1; //to make starting index 0
@@ -148,7 +150,26 @@ void file2graph(const string& filename, vector<pair<int, vector<int>>> &adj)
                     first = false;
                 }
                 else
-                    adj[vertex].second.push_back(stoi(word) - 1);
+                {
+                    vector<string> vecStr;
+                    string substr;
+                    stringstream gg(word);
+                    while(gg.good())
+                    {
+                        getline(gg, substr, ',');
+                        vecStr.push_back(substr);
+                    }
+                    if(stoi(vecStr[0]) > largestNum)
+                    {
+                        // int test = stoi(vecStr[0]);
+                        largestNum = stoi(vecStr[0]);
+                        adj.resize(largestNum);
+                        lens.resize(largestNum);                     
+
+                    }
+                    adj[vertex].second.push_back(stoi(vecStr[0]) - 1);
+                    lens[vertex].second.push_back(stoi(vecStr[1]));
+                }
             }
             
         }
