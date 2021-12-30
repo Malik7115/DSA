@@ -4,6 +4,113 @@
 std::random_device rand_dev;
 std::mt19937       generator(rand_dev());
 
+/**************** Misc Algorithms************/
+template<typename T>
+int twoSumProblem(unordered_map<T, T> &hashTable, vector<T> &inVec, signed int &sumInterval)
+{   
+    /*checks the number of target values tt in the interval [-sumInterval,sumInterval] (inclusive)
+    such that there are distinct numbers x,yx,y in the input file that satisfy x+y=tx+y=t*/
+
+    long long y          = 0;
+    // int endHashVal = hashTable[hashTable.end()].first;
+    unordered_map<T,T> targets;
+    int numTargets = 0;
+    
+
+    for(signed int t = -1*sumInterval; t <= sumInterval; t++) // change to - sumInterval
+    {
+        for(auto x: hashTable)
+        {
+            y = t - x.first;
+            if(hashTable.find(y) == hashTable.end()) 
+                continue;
+
+            else if((hashTable.find(y) != hashTable.end()) && x.first != y)
+            {
+                // numTargets += hashTable.count(y);
+                targets.insert({t,t});
+                break;
+            }
+        }
+    if(abs(t)%500 == 0)
+    {
+        cout << t << endl;
+        cout << "SIZE: " << targets.size() << endl;
+    }
+
+    }
+    cout << "SIZE FINAL: " << targets.size() << endl;
+    return targets.size();
+}
+
+int medianMaint(vector<int> &vec)
+{
+    priority_queue<int> lowHeap;  // supports extract max
+    priority_queue<int> highHeap; // suppports extract min
+
+    lowHeap.emplace(vec[0]);
+    int median  = vec[0];
+
+    int sizeDif =  0;
+    int sum     =  median;
+
+    vector <int> medianVec;
+    medianVec.push_back(median);
+
+
+    for(int i = 1; i < vec.size(); i++)
+    {
+        if((vec[i] <= lowHeap.top()))
+        {
+            lowHeap.emplace(vec[i]);
+        }
+
+        else
+        {
+            highHeap.emplace(-1 * vec[i]); // multiplying -1 to make it min heap
+        }
+
+        sizeDif = lowHeap.size() - highHeap.size(); 
+
+        if(sizeDif > 1)
+        {
+            highHeap.emplace(-1 * lowHeap.top());
+            lowHeap.pop();
+        }
+
+        if(sizeDif < -1)
+        {
+            lowHeap.emplace(-1 * highHeap.top());
+            highHeap.pop();
+        }
+
+
+        if(lowHeap.size() < highHeap.size())
+        {
+            median = highHeap.top() * -1;
+        }
+
+        else
+        {
+            median = lowHeap.top();
+        }
+        sum += median;
+        medianVec.push_back(median);
+    }
+    
+    int size1 = lowHeap.size();
+    int size2 = highHeap.size();
+
+    ofstream myfile ("comp.txt");
+    if (myfile.is_open())
+    {
+        for(int count = 0; count < medianVec.size(); count ++){
+            myfile << medianVec[count] << endl;
+        }
+        myfile.close();
+    }
+    return sum;
+}
 
 string largeNumMult(std::string A, std::string B)
 {

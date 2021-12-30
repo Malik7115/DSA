@@ -65,7 +65,9 @@ vector<pair<int, int>>  sortMapVal(map<int, int>& M)
     // returns a vector of pairs 
     return A;
 }
-void file2Vec(const string& filename, vector<int>& vec)
+
+template<typename T>
+void file2Vec(const string& filename, vector<T>& vec)
 {
     // Reads Integers From Files and stores them in vectors
 
@@ -78,7 +80,7 @@ void file2Vec(const string& filename, vector<int>& vec)
     {
         while(getline(numFile, line))
         {
-            vec.push_back(stoi(line));
+            vec.push_back(stoll(line));
         }
     }
 }
